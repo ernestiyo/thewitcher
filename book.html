@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Mode</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="reader-mode">
+
+    <header class="reader-header">
+        <a href="index.html" class="back-btn">
+            <i data-lucide="arrow-left"></i> Back to Library
+        </a>
+        <h2 id="book-title" style="font-size: 1rem; color: #fff;">Reading...</h2>
+        <div style="width: 20px;"></div> <!-- Spacer for balance -->
+    </header>
+
+    <div class="pdf-container">
+        <iframe id="pdf-viewer" src="" title="Book Reader"></iframe>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Logic to load book
+        const params = new URLSearchParams(window.location.search);
+        const bookId = params.get('book');
+
+        async function loadBook() {
+            if (!bookId) return;
+
+            try {
+                const response = await fetch('catalog.json');
+                const catalog = await response.json();
+                const book = catalog.find(b => b.id === bookId);
+
+                if (book && book.pdf) {
+                    document.title = `Reading: ${book.title}`;
+                    document.getElementById('book-title').innerText = book.title;
+                    document.getElementById('pdf-viewer').src = book.pdf;
+                } else {
+                    alert('Book or PDF not found!');
+                    window.location.href = 'index.html';
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        loadBook();
+    </script>
+</body>
+
+</html>

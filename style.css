@@ -1,0 +1,276 @@
+/* Witcher Theme Variables */
+:root {
+    --bg-dark: #0a0a0a;
+    --bg-card: #141414;
+    --bg-sidebar: #050505;
+
+    --accent-primary: #cd1818;
+    /* Witcher Red */
+    --accent-glow: #ff4500;
+    /* Fiery Orange */
+    --accent-gold: #c6a66a;
+    /* Muted Gold */
+
+    --text-main: #e0e0e0;
+    --text-muted: #8a8a8a;
+
+    --font-heading: 'Cinzel', serif;
+    /* Free Google Font match for medieval feel */
+    --font-body: 'Inter', sans-serif;
+    /* Clean modern font like the launcher */
+
+    --transition-speed: 0.3s;
+}
+
+/* Base Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    display: flex;
+}
+
+/* Typography */
+h1,
+h2,
+h3 {
+    font-family: var(--font-heading);
+    letter-spacing: 1px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Sidebar Removed */
+
+/* Main Content Area */
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+    position: relative;
+    /* Subtle background image/texture */
+    background:
+        linear-gradient(to bottom, rgba(10, 10, 10, 0.6), rgba(10, 10, 10, 1)),
+        url('https://images7.alphacoders.com/602/thumb-1920-602976.jpg') no-repeat center top fixed;
+    background-size: cover;
+}
+
+/* Hero Section */
+.hero {
+    padding: 4rem 5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    position: relative;
+    /* Red vignetting */
+    background: radial-gradient(circle at 70% 30%, rgba(205, 24, 24, 0.15), transparent 60%);
+}
+
+.hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 150px;
+    background: linear-gradient(to top, var(--bg-dark), transparent);
+}
+
+.hero-content {
+    z-index: 2;
+    max-width: 600px;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    color: #fff;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+    margin-bottom: 0.5rem;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: var(--accent-gold);
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: bold;
+}
+
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 25px var(--accent-primary);
+}
+
+/* Book Grid */
+.library-section {
+    padding: 0 5rem 4rem;
+    /* Match hero padding */
+    background: transparent;
+    /* Seamless flow from hero */
+    min-height: 40vh;
+    position: relative;
+    z-index: 10;
+}
+
+.section-title {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    /* refined box style */
+    background: linear-gradient(90deg, #8a0000, #500000);
+    /* Darker, gradient red */
+    color: #fff;
+    padding: 8px 24px;
+    display: inline-block;
+    /* skew for dynamic look */
+    clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 700;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    border-left: 4px solid #ff3333;
+    /* Bright highlight on edge */
+}
+
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    /* Slightly larger cards */
+    gap: 2.5rem;
+    max-width: 1400px;
+    /* Prevent stretching too wide */
+}
+
+.book-card {
+    background-color: var(--bg-card);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: var(--transition-speed);
+    cursor: pointer;
+    position: relative;
+    border: 1px solid #222;
+}
+
+.book-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-primary);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.book-cover-container {
+    width: 100%;
+    aspect-ratio: 2/3;
+    overflow: hidden;
+    position: relative;
+}
+
+.book-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.book-card:hover .book-cover {
+    transform: scale(1.05);
+}
+
+.book-info {
+    padding: 1rem;
+}
+
+.book-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* PDF View Specifics */
+body.reader-mode {
+    flex-direction: column;
+}
+
+.reader-header {
+    height: 60px;
+    background-color: var(--bg-sidebar);
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+    border-bottom: 1px solid #333;
+    justify-content: space-between;
+}
+
+.back-btn {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s;
+}
+
+.back-btn:hover {
+    color: #fff;
+}
+
+.pdf-container {
+    flex: 1;
+    width: 100%;
+    height: calc(100vh - 60px);
+    background: #000;
+}
+
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+        /* Hide sidebar on mobile for now, maybe add bottom nav if needed */
+    }
+
+    .main-content {
+        padding-bottom: 2rem;
+    }
+
+    .hero {
+        padding: 0rem;
+        padding-top: 6rem;
+        padding-left: 1.5rem;
+        /* Safe area for mobile status bar/notch */
+        height: 50vh;
+    }
+
+    .hero-title {
+        font-size: 2.2rem;
+    }
+
+    .library-section {
+        padding: 1.5rem;
+    }
+
+    .book-grid {
+        grid-template-columns: repeat(2, 1fr);
+        /* 2 columns on mobile */
+        gap: 1rem;
+    }
+}

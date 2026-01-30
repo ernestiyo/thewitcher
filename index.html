@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Witcher Library</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+    <!-- Sidebar Removed as per user request -->
+
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+
+        <!-- Hero Section (Featured Book) -->
+        <section class="hero" id="hero-section">
+            <div class="hero-content">
+                <div class="hero-subtitle">The Witcher Saga</div>
+                <h1 class="hero-title">Start Your Journey</h1>
+                <p style="color: #bbb; margin-bottom: 2rem; max-width: 400px; line-height: 1.5;">
+                    Enter the world of Geralt of Rivia. Monsters, magic, and destiny await in this collection of Andrzej
+                    Sapkowski's masterpieces.
+                </p>
+                <!-- Button removed -->
+            </div>
+            <!-- Background will be handled by CSS or dynamic JS Cover -->
+        </section>
+
+        <!-- Library Grid -->
+        <section class="library-section" id="library">
+            <h2 class="section-title">Your Collection</h2>
+            <div class="book-grid" id="book-grid">
+                <!-- Book Cards will be injected here by JS -->
+                <!-- Loading State -->
+                <div style="color: #666;">Loading artifacts...</div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+    <script>
+        lucide.createIcons();
+        function scrollToLibrary() {
+            document.getElementById('library').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+
+</html>
