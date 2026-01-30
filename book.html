@@ -125,10 +125,8 @@
         <h2 id="book-title" style="color: #fff;">Reading...</h2>
 
         <!-- Zoom Controls (Visible top right) -->
-        <div style="display: flex; gap: 10px;">
-            <button class="tool-btn" id="zoom-out"><i data-lucide="minus"></i></button>
-            <button class="tool-btn" id="zoom-in"><i data-lucide="plus"></i></button>
-        </div>
+        <!-- Zoom Controls Removed -->
+
     </header>
 
     <div id="pdf-render-container">
@@ -245,86 +243,8 @@
             queueRenderPage(pageNum);
         }
 
-        function onZoomIn() {
-            const oldScale = scale;
-            scale *= 1.25; // Multiply for better scaling feel
-
-            // Smart Scroll Adjustment
-            const container = document.getElementById('pdf-render-container');
-            const currentScroll = container.scrollTop;
-
-            renderPage(pageNum);
-
-            // Adjust scroll to keep relative position
-            // We need to wait for render? Not strictly for scroll setting but logical
-            // Approximate new position:
-            container.scrollTop = currentScroll * (scale / oldScale);
-        }
-
-        function onZoomOut() {
-            if (scale <= 0.2) return;
-            const oldScale = scale;
-            scale /= 1.25;
-
-            const container = document.getElementById('pdf-render-container');
-            const currentScroll = container.scrollTop;
-
-            renderPage(pageNum);
-            container.scrollTop = currentScroll * (scale / oldScale);
-        }
-
         document.getElementById('prev-page').addEventListener('click', onPrevPage);
         document.getElementById('next-page').addEventListener('click', onNextPage);
-        document.getElementById('zoom-in').addEventListener('click', onZoomIn);
-        document.getElementById('zoom-out').addEventListener('click', onZoomOut);
-
-        /* Touch Gestures for Pinch Zoom */
-        let touchStartDist = 0;
-        const pdfContainer = document.getElementById('pdf-render-container');
-
-        pdfContainer.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 2) {
-                touchStartDist = getTouchDist(e);
-            }
-        });
-
-        pdfContainer.addEventListener('touchend', (e) => {
-            // We use touchend to triggering the render to avoid lag
-            // Check if we were pinching (startDist > 0)
-            if (touchStartDist > 0 && e.touches.length < 2) {
-                // Pinch ended
-                touchStartDist = 0;
-            }
-        });
-
-        // Simple debounce for smoother pinch experience if we wanted real-time, 
-        // but for PDF re-render, let's just use a threshold on 'touchmove' or 'touchend'.
-        // Actually, reliable pinch on web often needs 'touchmove'.
-
-        pdfContainer.addEventListener('touchmove', (e) => {
-            if (e.touches.length === 2) {
-                const dist = getTouchDist(e);
-                if (touchStartDist > 0) {
-                    const ratio = dist / touchStartDist;
-
-                    // Threshold to trigger zoom command
-                    if (ratio > 1.2) { // Zoom In
-                        onZoomIn();
-                        touchStartDist = dist; // Reset base to avoid rapid fire
-                    } else if (ratio < 0.8) { // Zoom Out
-                        onZoomOut();
-                        touchStartDist = dist;
-                    }
-                }
-            }
-        });
-
-        function getTouchDist(e) {
-            return Math.hypot(
-                e.touches[0].pageX - e.touches[1].pageX,
-                e.touches[0].pageY - e.touches[1].pageY
-            );
-        }
 
         init();
     </script>
