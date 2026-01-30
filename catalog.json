@@ -1,0 +1,50 @@
+[
+  {
+    "id": "Baptism_Fire",
+    "title": "Baptism of Fire",
+    "cover": "Books/Baptism_Fire/baptism_fire_cover.jpg",
+    "pdf": "Books/Baptism_Fire/Baptism of Fire.pdf"
+  },
+  {
+    "id": "Blood_Elves",
+    "title": "Blood of Elves",
+    "cover": "Books/Blood_Elves/blood_elves_cover.jpg",
+    "pdf": "Books/Blood_Elves/Blood of Elves.pdf"
+  },
+  {
+    "id": "Lady_Lake",
+    "title": "The Lady of the Lake",
+    "cover": "Books/Lady_Lake/lady_lake_cover.jpg",
+    "pdf": "Books/Lady_Lake/Lady of the Lake.pdf"
+  },
+  {
+    "id": "Last_Wish",
+    "title": "The Last Wish",
+    "cover": "Books/Last_Wish/last_wish_cover.jpg",
+    "pdf": "Books/Last_Wish/The Last Wish.pdf"
+  },
+  {
+    "id": "Season_Storms",
+    "title": "Season of Storms",
+    "cover": "Books/Season_Storms/season_storms_cover.jpg",
+    "pdf": "Books/Season_Storms/Season of Storms.pdf"
+  },
+  {
+    "id": "Sword_Destiny",
+    "title": "Sword of Destiny",
+    "cover": "Books/Sword_Destiny/sword_destiny_cover.jpg",
+    "pdf": "Books/Sword_Destiny/Sword of Destiny.pdf"
+  },
+  {
+    "id": "Time_Contempt",
+    "title": "Time of Contempt",
+    "cover": "Books/Time_Contempt/time_contempt_cover.jpg",
+    "pdf": "Books/Time_Contempt/Time of Contempt.pdf"
+  },
+  {
+    "id": "Tower_Swallows",
+    "title": "The Tower of the Swallows",
+    "cover": "Books/Tower_Swallows/tower_swallows_cover.jpeg",
+    "pdf": "Books/Tower_Swallows/The Tower of the Swallows.pdf"
+  }
+]
