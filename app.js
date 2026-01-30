@@ -21,7 +21,8 @@ const app = {
         app.data.forEach(book => {
             const card = document.createElement('div');
             card.className = 'book-card';
-            card.onclick = () => window.location.href = `book.html?book=${encodeURIComponent(book.id)}`;
+            // Link to Detail Page first
+            card.onclick = () => window.location.href = `detail.html?book=${encodeURIComponent(book.id)}`;
 
             // Use default cover if missing, or use relative path
             const coverSrc = book.cover ? book.cover : 'placeholder.jpg';
@@ -32,7 +33,7 @@ const app = {
                 </div>
                 <div class="book-info">
                     <h3 class="book-title">${book.title}</h3>
-                    <div style="font-size: 0.8rem; color: var(--text-muted);">PDF Available</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">${book.year}</div>
                 </div>
             `;
             grid.appendChild(card);

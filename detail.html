@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Details</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="detail-page">
+
+    <div class="back-nav-container">
+        <a href="index.html" class="back-btn-large">
+            <i data-lucide="arrow-left"></i> Back to Library
+        </a>
+    </div>
+
+    <div class="detail-container">
+        <!-- Left: Cover -->
+        <div class="detail-cover-wrapper">
+            <img id="detail-cover" src="" alt="Book Cover" class="detail-cover">
+        </div>
+
+        <!-- Right: Info -->
+        <div class="detail-info">
+            <h1 id="detail-title" class="detail-title">Loading...</h1>
+            <div id="detail-year" class="detail-year">...</div>
+
+            <div class="divider"></div>
+
+            <p id="detail-desc" class="detail-desc">
+                Loading description...
+            </p>
+
+            <button id="read-btn" class="btn-primary detail-action">
+                <i data-lucide="book-open"></i> Read Book
+            </button>
+        </div>
+    </div>
+
+    <!-- Background for atmosphere -->
+    <div class="detail-bg" id="detail-bg"></div>
+
+    <script>
+        lucide.createIcons();
+
+        const params = new URLSearchParams(window.location.search);
+        const bookId = params.get('book');
+
+        async function loadDetail() {
+            try {
+                const response = await fetch('catalog.json');
+                const catalog = await response.json();
+                const book = catalog.find(b => b.id === bookId);
+
+                if (book) {
+                    document.title = book.title;
+                    document.getElementById('detail-title').innerText = book.title;
+                    document.getElementById('detail-year').innerText = "Released: " + book.year;
+                    document.getElementById('detail-desc').innerText = book.desc;
+                    document.getElementById('detail-cover').src = book.cover;
+
+                    // Blurred background
+                    document.getElementById('detail-bg').style.backgroundImage = `url('${book.cover}')`;
+
+                    document.getElementById('read-btn').onclick = () => {
+                        window.location.href = `book.html?book=${book.id}`;
+                    };
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        loadDetail();
+    </script>
+</body>
+
+</html>
