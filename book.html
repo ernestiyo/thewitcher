@@ -3,9 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Enable native scaling for mobile zoom -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reading Mode</title>
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;600&display=swap"
@@ -22,96 +22,102 @@
     <style>
         body.reader-mode {
             background-color: #1a1a1a;
-            overflow: hidden;
-            /* App handles scroll */
+            /* Allow native scroll/zoom on mobile */
+            overflow: auto;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
         }
 
         .reader-header {
-            z-index: 100;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            height: 60px;
-            background: rgba(10, 10, 10, 0.95);
-            backdrop-filter: blur(5px);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            flex-shrink: 0;
+            height: 50px;
+            background: #0a0a0a;
             display: flex;
-            justify-content: space-between;
             align-items: center;
             padding: 0 1rem;
+            border-bottom: 1px solid #333;
+            z-index: 100;
         }
 
-        #book-title {
-            font-size: 0.9rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 40%;
+        /* Desktop Container (Iframe) */
+        #desktop-container {
+            flex: 1;
+            width: 100%;
+            height: calc(100vh - 50px);
+            display: none;
+            /* Hidden by default */
         }
 
-        /* PDF Container */
-        #pdf-render-container {
-            position: absolute;
-            top: 60px;
-            bottom: 60px;
-            /* Space for bottom toolbar on mobile */
-            left: 0;
-            right: 0;
-            overflow: auto;
-            display: flex;
-            justify-content: center;
-            background-color: #333;
-            padding: 20px 0;
-            /* Touch handling */
-            touch-action: pan-x pan-y;
-            -webkit-overflow-scrolling: touch;
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Mobile Container (PDF.js) */
+        #mobile-container {
+            display: none;
+            /* Hidden by default */
+            flex: 1;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-bottom: 80px;
+            /* Space for nav */
+            width: 100%;
+            overflow-x: hidden;
         }
 
         canvas {
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            max-width: 95vw;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            margin-top: 1rem;
+            max-width: 98vw;
         }
 
-        /* Toolbar Controls */
-        .toolbar {
+        /* Mobile Toolbar */
+        .mobile-toolbar {
             position: fixed;
-            bottom: 0;
-            width: 100%;
-            height: 60px;
-            background: #0a0a0a;
-            display: flex;
-            justify-content: space-around;
-            /* Distribute buttons */
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(20, 20, 20, 0.9);
+            border: 1px solid #333;
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: none;
+            /* Flex when mobile */
+            gap: 20px;
             align-items: center;
-            padding: 0 1rem;
-            z-index: 100;
-            border-top: 1px solid #333;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            z-index: 200;
         }
 
-        /* Desktop specific toolbar tweaks could go here, 
-           but this mobile-first bottom bar works well contextually */
-
-        .tool-btn {
-            background: none;
+        .nav-btn {
+            background: var(--accent-primary);
+            color: white;
             border: none;
-            color: #fff;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 4px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
-            gap: 5px;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(205, 24, 24, 0.4);
         }
 
-        .tool-btn:active {
-            background: #333;
+        .nav-btn:disabled {
+            background: #444;
+            box-shadow: none;
         }
 
-        .page-info {
-            color: #aaa;
-            font-size: 0.8rem;
-            min-width: 60px;
-            text-align: center;
+        .page-counter {
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: var(--font-body);
         }
     </style>
 </head>
@@ -119,33 +125,27 @@
 <body class="reader-mode">
 
     <header class="reader-header">
-        <a href="#" onclick="history.back()" class="back-btn">
-            <i data-lucide="arrow-left"></i> <span style="display:none">Back</span>
+        <a href="index.html" class="back-btn">
+            <i data-lucide="arrow-left"></i> <span style="margin-left:8px">Library</span>
         </a>
-        <h2 id="book-title" style="color: #fff;">Reading...</h2>
-
-        <!-- Zoom Controls (Visible top right) -->
-        <!-- Zoom Controls Removed -->
-
+        <div style="flex:1; text-align:center; color:#888; font-size:0.8rem;" id="header-title">Loading...</div>
+        <div style="width: 60px;"></div> <!-- Spacer -->
     </header>
 
-    <div id="pdf-render-container">
+    <!-- Desktop Viewer (Native) -->
+    <div id="desktop-container">
+        <iframe id="native-viewer" src=""></iframe>
+    </div>
+
+    <!-- Mobile Viewer (PDF.js) -->
+    <div id="mobile-container">
         <canvas id="the-canvas"></canvas>
     </div>
 
-    <!-- Bottom Navigation Toolbar -->
-    <div class="toolbar">
-        <button class="tool-btn" id="prev-page">
-            <i data-lucide="chevron-left"></i> Prev
-        </button>
-
-        <span class="page-info">
-            <span id="page-num">--</span> / <span id="page-count">--</span>
-        </span>
-
-        <button class="tool-btn" id="next-page">
-            Next <i data-lucide="chevron-right"></i>
-        </button>
+    <div class="mobile-toolbar" id="mobile-toolbar">
+        <button class="nav-btn" id="prev"><i data-lucide="chevron-left"></i></button>
+        <div class="page-counter"><span id="pg-num">1</span> / <span id="pg-tot">--</span></div>
+        <button class="nav-btn" id="next"><i data-lucide="chevron-right"></i></button>
     </div>
 
     <script>
@@ -153,13 +153,11 @@
         const params = new URLSearchParams(window.location.search);
         const bookId = params.get('book');
 
-        let pdfDoc = null,
-            pageNum = 1,
-            pageRendering = false,
-            pageNumPending = null,
-            scale = 1.0,
-            canvas = document.getElementById('the-canvas'),
-            ctx = canvas.getContext('2d');
+        // Detect Mobile (Simple width check or User Agent)
+        const isMobile = window.innerWidth <= 1024; // Treat Tablets as Mobile for PDF.js typically safer? 
+        // Actually, iPad Pro might prefer Iframe. Let's stick to < 768px or touch.
+        // Better: Check touch capability or screen width.
+        const useMobileReader = (window.innerWidth < 1024);
 
         async function init() {
             try {
@@ -167,49 +165,54 @@
                 const catalog = await response.json();
                 const book = catalog.find(b => b.id === bookId);
 
-                if (book && book.pdf) {
-                    document.title = `Reading: ${book.title}`;
-                    document.getElementById('book-title').innerText = book.title;
+                if (!book) { window.location.href = 'index.html'; return; }
 
-                    // Load PDF
-                    const loadingTask = pdfjsLib.getDocument(book.pdf);
-                    pdfDoc = await loadingTask.promise;
+                document.title = book.title;
+                document.getElementById('header-title').innerText = book.title;
 
-                    document.getElementById('page-count').textContent = pdfDoc.numPages;
-
-                    // Calculate Initial Scale (Fit Width)
-                    const container = document.getElementById('pdf-render-container');
-                    const page = await pdfDoc.getPage(1);
-                    const viewport = page.getViewport({ scale: 1.0 });
-                    const desiredWidth = container.clientWidth * 0.95;
-
-                    // Set initial scale to fit width
-                    scale = desiredWidth / viewport.width;
-
-                    renderPage(pageNum);
+                if (!useMobileReader) {
+                    // DESKTOP: Use Native Iframe
+                    document.getElementById('desktop-container').style.display = 'block';
+                    document.getElementById('native-viewer').src = book.pdf;
                 } else {
-                    alert('Book not found!');
-                    window.location.href = 'index.html';
+                    // MOBILE: Use PDF.js
+                    document.getElementById('mobile-container').style.display = 'flex';
+                    document.getElementById('mobile-toolbar').style.display = 'flex';
+                    initPDFJS(book.pdf);
                 }
-            } catch (e) {
-                console.error("Error loading PDF:", e);
-                document.getElementById('pdf-render-container').innerHTML = `<p style="color:white; padding:20px;">Error loading PDF. Please check file path.</p>`;
-            }
+
+            } catch (e) { console.error(e); }
+        }
+
+        // PDF.js Logic for Mobile
+        let pdfDoc = null, pageNum = 1, pageRendering = false, pageNumPending = null;
+        let scale = 1.0;
+        const canvas = document.getElementById('the-canvas');
+        const ctx = canvas.getContext('2d');
+
+        async function initPDFJS(url) {
+            const loadingTask = pdfjsLib.getDocument(url);
+            pdfDoc = await loadingTask.promise;
+            document.getElementById('pg-tot').textContent = pdfDoc.numPages;
+
+            // Calculate Fit Width Scale once
+            const page = await pdfDoc.getPage(1);
+            const viewportRaw = page.getViewport({ scale: 1.0 });
+            const containerWidth = window.innerWidth;
+            scale = (containerWidth - 20) / viewportRaw.width; // -20px margin
+
+            renderPage(pageNum);
         }
 
         function renderPage(num) {
             pageRendering = true;
-            // Fetch page
             pdfDoc.getPage(num).then(function (page) {
-                let viewport = page.getViewport({ scale: scale });
+                const viewport = page.getViewport({ scale: scale });
                 canvas.height = viewport.height;
                 canvas.width = viewport.width;
 
-                var renderContext = {
-                    canvasContext: ctx,
-                    viewport: viewport
-                };
-                var renderTask = page.render(renderContext);
+                const renderContext = { canvasContext: ctx, viewport: viewport };
+                const renderTask = page.render(renderContext);
 
                 renderTask.promise.then(function () {
                     pageRendering = false;
@@ -219,32 +222,31 @@
                     }
                 });
             });
+            document.getElementById('pg-num').textContent = num;
 
-            document.getElementById('page-num').textContent = num;
+            // Update Buttons
+            document.getElementById('prev').disabled = num <= 1;
+            document.getElementById('next').disabled = num >= pdfDoc.numPages;
+
+            window.scrollTo(0, 0);
         }
 
         function queueRenderPage(num) {
-            if (pageRendering) {
-                pageNumPending = num;
-            } else {
-                renderPage(num);
-            }
+            if (pageRendering) pageNumPending = num;
+            else renderPage(num);
         }
 
-        function onPrevPage() {
+        document.getElementById('prev').addEventListener('click', () => {
             if (pageNum <= 1) return;
             pageNum--;
             queueRenderPage(pageNum);
-        }
+        });
 
-        function onNextPage() {
+        document.getElementById('next').addEventListener('click', () => {
             if (pageNum >= pdfDoc.numPages) return;
             pageNum++;
             queueRenderPage(pageNum);
-        }
-
-        document.getElementById('prev-page').addEventListener('click', onPrevPage);
-        document.getElementById('next-page').addEventListener('click', onNextPage);
+        });
 
         init();
     </script>
